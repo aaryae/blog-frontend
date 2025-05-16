@@ -1,7 +1,11 @@
+import China from "@assets/images/China";
+
 function App() {
   return (
     <>
-      <div>helrjoasidfj</div>
+      <div>
+        <China/>
+      </div>
     </>
   );
 }
