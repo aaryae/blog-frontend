@@ -1,6 +1,6 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 
-export default function Sidebar() {
+ function Sidebar() {
   useEffect(() => {
     const menuToggle = document.getElementById("menu-toggle");
     const closeMenu = document.getElementById("close-menu");
@@ -48,3 +48,5 @@ export default function Sidebar() {
     </div>
   );
 }
+
+export default Sidebar;
