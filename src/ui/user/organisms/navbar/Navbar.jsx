@@ -15,7 +15,7 @@ export default function Navbar() {
           <ul className='flex gap-7'>
             {['Home', 'Food', 'Political', 'Business', 'Technology', 'Contact Us'].map((item) => {
               const isHome = item === 'Home'
-              const link = isHome ? '#' : `#${item.toLowerCase().replace(' ', '')}`
+              const link = isHome ? '/' : `/${item.toLowerCase().replace(' ', '')}`
 
               return (
                 <li key={item} className='font-bold uppercase text-sm'>
