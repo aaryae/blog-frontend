@@ -1,7 +1,7 @@
 const Hero = () => {
   return (
     <div className='max-w-6xl mx-auto pt-24'>
-      <div className='grid grid-cols-1 lg:grid-cols-3 gap-4 py-4 pl-4'>
+      <div className='grid grid-cols-1 lg:grid-cols-3 gap-4 '>
         {/* Main Left Block */}
         <div className='lg:col-span-2 relative h-[30rem] bg-gray-300 rounded-lg flex flex-col justify-end p-6 text-white'>
           <span className='text-[#af4133]  font-bold text-xl uppercase mb-2 tracking-widest'>Title</span>

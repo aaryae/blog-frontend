@@ -3,7 +3,7 @@ import Logo from '../../atoms/Logo'
 export default function Navbar() {
   return (
     <nav
-      className='bg-transparent
+      className='bg-[white]
      text-[#000000af] w-full fixed top-0 z-40 shadow-md  '
     >
       <div className='max-w-6xl mx-auto w-full flex gap-8 items-center justify-between py-4 '>
