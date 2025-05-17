@@ -6,20 +6,21 @@ const Card = ({ image, title, intro, date, likes }) => {
   const [likeCount, setLikeCount] = useState(likes)
 
   const toggleLike = () => {
-    if (liked) {
-      setLikeCount(likeCount - 1)
-    } else {
-      setLikeCount(likeCount + 1)
-    }
+    setLikeCount((prev) => (liked ? prev - 1 : prev + 1))
     setLiked(!liked)
   }
 
   return (
-    <div className=' rounded-lg shadow-sm md:max-w-md w-full mx-auto bg-white overflow-hidden'>
-      {/* Image Placeholder */}
-      <div className='h-60 bg-gray-300 flex items-center justify-center'>
-        {/* Image will go here in future */}
-        {image && <img src={image} alt={title} className='w-full h-full object-cover' />}
+    <div className='group rounded-lg shadow-sm md:max-w-md w-full mx-auto bg-white overflow-hidden transition duration-300 cursor-pointer'>
+      {/* Image */}
+      <div className='h-60 bg-gray-300 flex items-center justify-center overflow-hidden'>
+        {image && (
+          <img
+            src={image}
+            alt={title}
+            className='w-full h-full object-cover transition duration-300 delay-400 ease-in-out group-hover:scale-110'
+          />
+        )}
       </div>
 
       {/* Content */}

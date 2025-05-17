@@ -1,4 +1,5 @@
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
+import AdminDashboard from './ui/admin/organisms/AdminDashboard'
 import ForgotPassword from './ui/user/organisms/auth/ForgotPassword'
 import Login from './ui/user/organisms/auth/Login'
 import Register from './ui/user/organisms/auth/Register'
@@ -49,6 +50,10 @@ const router = createBrowserRouter([
         element: <ContactUs />,
       },
     ],
+  },
+  {
+    path: '/admin',
+    element: <AdminDashboard />,
   },
 ])
 
