@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import Logo from '../../atoms/Logo'
 
 export default function Navbar() {
@@ -19,7 +20,7 @@ export default function Navbar() {
 
               return (
                 <li key={item} className='font-bold uppercase text-sm'>
-                  <a href={link}>{item}</a>
+                  <Link to={link}>{item}</Link>
                 </li>
               )
             })}
