@@ -9,7 +9,7 @@ const Hero = () => {
           <p className='text-sm font-semibold'>
             JOHN DOE • <span className='font-normal'>20 APRIL 2018</span>
           </p>
-        </div>
+      </div>
 
         {/* Right Column */}
         <div className='flex flex-col gap-4'>
