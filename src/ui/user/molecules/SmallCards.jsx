@@ -1,6 +1,6 @@
 const SmallCard = ({ image, category, title, author, date, excerpt }) => {
   return (
-    <div className='flex flex-col sm:flex-row gap-4 max-w-3xl mx-auto'>
+    <div className='flex flex-col sm:flex-row gap-4  '>
       {/* Image */}
       <div className='w-full sm:w-1/3'>
         <div className='h-48 sm:h-full bg-gray-300 overflow-hidden rounded'>
