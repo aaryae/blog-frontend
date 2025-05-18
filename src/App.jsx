@@ -4,6 +4,7 @@ import ProtectedRoute from './ui/ProtectedRoute'
 import ForgotPassword from './ui/user/organisms/auth/ForgotPassword'
 import Login from './ui/user/organisms/auth/Login'
 import Register from './ui/user/organisms/auth/Register'
+import CardDetails from './ui/user/organisms/CardDetails'
 import ContactUs from './ui/user/organisms/ContactUs'
 import BusinessPage from './ui/user/pages/BusinessPage'
 import FoodPage from './ui/user/pages/FoodPage'
@@ -49,6 +50,14 @@ const router = createBrowserRouter([
           <ProtectedRoute>
             <Politicalpage />
           </ProtectedRoute>
+        ),
+      },
+      {
+        path: '/card-details',
+        element: (
+          // <ProtectedRoute>
+          <CardDetails />
+          // </ProtectedRoute>
         ),
       },
       {
