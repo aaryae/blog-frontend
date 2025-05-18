@@ -1,41 +1,33 @@
 import { yupResolver } from '@hookform/resolvers/yup'
 import { UserRoundPlus } from 'lucide-react'
 import { useForm } from 'react-hook-form'
-import { Link } from 'react-router-dom'
-import * as yup from 'yup'
-
-// ✅ Validation Schema
-const schema = yup.object().shape({
-  firstName: yup.string().required('First name is required'),
-  lastName: yup.string().required('Last name is required'),
-  email: yup.string().email('Invalid email').required('Email is required'),
-  phone: yup.string().required('Phone number is required'),
-  address: yup.string().required('Address is required'),
-  nationality: yup.string().required('Nationality is required'),
-  about: yup.string().required('Please write something about yourself'),
-  password: yup.string().min(6, 'Minimum 6 characters').required('Password is required'),
-  confirmPassword: yup
-    .string()
-    .oneOf([yup.ref('password'), null], 'Passwords must match')
-    .required('Confirm your password'),
-  acceptTerms: yup.bool().oneOf([true], 'You must accept Terms & Conditions'),
-})
+import { Link, useNavigate } from 'react-router-dom'
+import { signUp } from '../../../../services/auth/authService'
+import { registerSchema } from '../../../../config/schema/auth/register.schema'
 
 const Register = () => {
+  const navigate = useNavigate()
+
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm({
-    resolver: yupResolver(schema),
+    resolver: yupResolver(registerSchema),
   })
 
-  const onSubmit = (data) => {
-    console.log('✅ Registered user:', data)
+  const onSubmit = async (data) => {
+    try {
+      const result = await signUp(data)
+      console.log('✅ Registration successful:', result)
+      navigate('/login') // redirect to login after successful registration
+    } catch (error) {
+      console.error('❌ Registration failed:', error.response?.data || error.message)
+    }
   }
 
   return (
-    <div className=' flex items-center justify-center bg-white pt-40 py-20'>
+    <div className='flex items-center justify-center bg-white pt-40 py-20'>
       <div className='w-full max-w-2xl bg-white border border-gray-200 rounded-xl shadow p-10 space-y-6'>
         {/* Header */}
         <div className='text-center'>

@@ -2,12 +2,7 @@ import { yupResolver } from '@hookform/resolvers/yup'
 import { KeyRound } from 'lucide-react'
 import { useForm } from 'react-hook-form'
 import { Link } from 'react-router-dom'
-import * as yup from 'yup'
-
-// ✅ Validation Schema
-const schema = yup.object().shape({
-  email: yup.string().email('Invalid email format').required('Email is required'),
-})
+import { forgotPasswordSchema } from '../../../../config/schema/auth/forgotPassword.schema'
 
 const ForgotPassword = () => {
   const {
@@ -15,7 +10,7 @@ const ForgotPassword = () => {
     handleSubmit,
     formState: { errors },
   } = useForm({
-    resolver: yupResolver(schema),
+    resolver: yupResolver(forgotPasswordSchema),
   })
 
   const onSubmit = (data) => {
@@ -25,7 +20,6 @@ const ForgotPassword = () => {
   return (
     <div className='min-h-screen flex items-center justify-center bg-white px-6'>
       <div className='w-full max-w-md bg-white border border-gray-200 rounded-xl shadow-md p-8 space-y-6'>
-        {/* Header Icon + Title */}
         <div className='text-center'>
           <div className='text-5xl mb-2 w-fit mx-auto text-red-700'>
             <KeyRound size={48} strokeWidth={1.5} absoluteStrokeWidth />
@@ -36,7 +30,6 @@ const ForgotPassword = () => {
           </p>
         </div>
 
-        {/* Form */}
         <form className='space-y-5' onSubmit={handleSubmit(onSubmit)}>
           <div>
             <label className='text-sm font-medium text-gray-700'>Email Address</label>
