@@ -2,13 +2,7 @@ import { yupResolver } from '@hookform/resolvers/yup'
 import { UserRound } from 'lucide-react'
 import { useForm } from 'react-hook-form'
 import { Link } from 'react-router-dom'
-import * as yup from 'yup'
-
-// ✅ Validation Schema
-const schema = yup.object().shape({
-  username: yup.string().email('Invalid email format').required('Email is required'),
-  password: yup.string().min(6, 'Minimum 6 characters').required('Password is required'),
-})
+import { loginSchema } from '../../../../config/schema/auth/login.schema'
 
 const Login = () => {
   const {
@@ -16,7 +10,7 @@ const Login = () => {
     handleSubmit,
     formState: { errors },
   } = useForm({
-    resolver: yupResolver(schema),
+    resolver: yupResolver(loginSchema),
   })
 
   const onSubmit = (data) => {
@@ -26,7 +20,6 @@ const Login = () => {
   return (
     <div className='min-h-screen flex items-center justify-center bg-white px-6'>
       <div className='w-full max-w-md bg-white border border-gray-200 rounded-xl shadow-md p-8 space-y-6'>
-        {/* Icon */}
         <div className='text-center'>
           <div className='text-5xl mb-2 mx-auto w-fit text-red-700'>
             <UserRound size={48} strokeWidth={1.5} />
@@ -34,7 +27,6 @@ const Login = () => {
           <h2 className='text-2xl font-bold text-gray-800'>Member Login</h2>
         </div>
 
-        {/* Form */}
         <form className='space-y-5' onSubmit={handleSubmit(onSubmit)}>
           <div>
             <label className='block text-sm font-medium text-gray-700 mb-1'>Email</label>
