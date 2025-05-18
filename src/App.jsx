@@ -1,3 +1,4 @@
+import { Toaster } from 'react-hot-toast'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import AdminDashboard from './ui/admin/organisms/AdminDashboard'
 import ProtectedRoute from './ui/ProtectedRoute'
@@ -89,7 +90,12 @@ const router = createBrowserRouter([
 ])
 
 function App() {
-  return <RouterProvider router={router} />
+  return (
+    <>
+      <RouterProvider router={router} />
+      <Toaster position='bottom-right' reverseOrder={false} />
+    </>
+  )
 }
 
 export default App

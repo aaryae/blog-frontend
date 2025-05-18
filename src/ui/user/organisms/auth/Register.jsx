@@ -1,9 +1,10 @@
 import { yupResolver } from '@hookform/resolvers/yup'
 import { UserRoundPlus } from 'lucide-react'
 import { useForm } from 'react-hook-form'
+import toast from 'react-hot-toast'
 import { Link, useNavigate } from 'react-router-dom'
-import { signUp } from '../../../../services/auth/authService'
 import { registerSchema } from '../../../../config/schema/auth/register.schema'
+import { signUp } from '../../../../services/auth/authService'
 
 const Register = () => {
   const navigate = useNavigate()
@@ -19,17 +20,18 @@ const Register = () => {
   const onSubmit = async (data) => {
     try {
       const result = await signUp(data)
-      console.log('✅ Registration successful:', result)
-      navigate('/login') // redirect to login after successful registration
+      toast.success('🎉 Registration successful!')
+      navigate('/login')
     } catch (error) {
-      console.error('❌ Registration failed:', error.response?.data || error.message)
+      const message = error?.response?.data?.message || 'Registration failed. Please try again.'
+      toast.error(`❌ ${message}`)
+      console.error('❌ Registration failed:', message)
     }
   }
 
   return (
     <div className='flex items-center justify-center bg-white pt-40 py-20'>
       <div className='w-full max-w-2xl bg-white border border-gray-200 rounded-xl shadow p-10 space-y-6'>
-        {/* Header */}
         <div className='text-center'>
           <div className='text-5xl mb-2 w-fit mx-auto text-red-700'>
             <UserRoundPlus size={48} strokeWidth={1.5} />
@@ -37,9 +39,7 @@ const Register = () => {
           <h2 className='text-2xl font-bold text-gray-800'>Create an Account</h2>
         </div>
 
-        {/* Form */}
         <form className='space-y-6' onSubmit={handleSubmit(onSubmit)}>
-          {/* First + Last Name */}
           <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
             <div>
               <label className='text-sm font-medium text-gray-700'>First Name</label>
@@ -61,7 +61,6 @@ const Register = () => {
             </div>
           </div>
 
-          {/* Email */}
           <div>
             <label className='text-sm font-medium text-gray-700'>Email</label>
             <input
@@ -72,7 +71,6 @@ const Register = () => {
             <p className='text-red-500 text-sm'>{errors.email?.message}</p>
           </div>
 
-          {/* Phone + Address */}
           <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
             <div>
               <label className='text-sm font-medium text-gray-700'>Phone Number</label>
@@ -94,7 +92,6 @@ const Register = () => {
             </div>
           </div>
 
-          {/* Password + Confirm Password */}
           <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
             <div>
               <label className='text-sm font-medium text-gray-700'>Password</label>
@@ -118,7 +115,6 @@ const Register = () => {
             </div>
           </div>
 
-          {/* Nationality */}
           <div>
             <label className='text-sm font-medium text-gray-700'>Nationality</label>
             <input
@@ -129,7 +125,6 @@ const Register = () => {
             <p className='text-red-500 text-sm'>{errors.nationality?.message}</p>
           </div>
 
-          {/* About */}
           <div>
             <label className='text-sm font-medium text-gray-700'>About You</label>
             <textarea
@@ -141,7 +136,6 @@ const Register = () => {
             <p className='text-red-500 text-sm'>{errors.about?.message}</p>
           </div>
 
-          {/* Terms */}
           <div className='flex items-start gap-2'>
             <input type='checkbox' {...register('acceptTerms')} className='accent-red-600 mt-1' />
             <label className='text-sm text-gray-700'>
@@ -153,7 +147,6 @@ const Register = () => {
           </div>
           <p className='text-red-500 text-sm'>{errors.acceptTerms?.message}</p>
 
-          {/* Submit */}
           <button
             type='submit'
             className='w-full bg-red-700 hover:bg-red-800 text-white font-semibold py-2 rounded transition'
@@ -161,7 +154,6 @@ const Register = () => {
             Register
           </button>
 
-          {/* Already registered */}
           <p className='text-sm text-center text-gray-600'>
             Already have an account?{' '}
             <Link to='/login' className='text-red-600 hover:underline'>
