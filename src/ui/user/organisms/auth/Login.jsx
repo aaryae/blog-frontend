@@ -6,6 +6,7 @@ import { Eye, EyeOff, UserRound } from 'lucide-react'
 import { useAuth } from '../../../../context/AuthContext'
 import { loginSchema } from '../../../../config/schema/auth/login.schema'
 import { signIn } from '../../../../services/auth/authService'
+import toast from 'react-hot-toast'
 
 const Login = () => {
   const { login } = useAuth()
@@ -42,6 +43,8 @@ const Login = () => {
       const result = await signIn(data)
       login(result.token)
       navigate('/')
+          toast.success('🎉 Login successful!.')
+
     } catch (error) {
       console.error('Login error:', error)
       alert('❌ Invalid email or password.')
