@@ -1,24 +1,36 @@
 import { Heart } from 'lucide-react'
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 
 const Card = ({ image, title, intro, date, likes }) => {
   const [liked, setLiked] = useState(false)
   const [likeCount, setLikeCount] = useState(likes)
+  const navigate = useNavigate()
 
-  const toggleLike = () => {
+  const toggleLike = (e) => {
+    e.stopPropagation() // prevent triggering card click
     setLikeCount((prev) => (liked ? prev - 1 : prev + 1))
     setLiked(!liked)
   }
 
+  const handleCardClick = () => {
+    navigate('/card-details', {
+      state: { image, title, intro, date, likes: likeCount },
+    })
+  }
+
   return (
-    <div className='group rounded-lg shadow-sm md:max-w-md w-full mx-auto bg-white overflow-hidden transition duration-300 cursor-pointer'>
+    <div
+      onClick={handleCardClick}
+      className='group rounded-lg shadow-sm md:max-w-md w-full mx-auto bg-white overflow-hidden transition duration-300 cursor-pointer'
+    >
       {/* Image */}
       <div className='h-60 bg-gray-300 flex items-center justify-center overflow-hidden'>
         {image && (
           <img
             src={image}
             alt={title}
-            className='w-full h-full object-cover transition duration-300 delay-400 ease-in-out group-hover:scale-110'
+            className='w-full h-full object-cover transition duration-300 ease-in-out group-hover:scale-110 group-hover:opacity-80'
           />
         )}
       </div>
@@ -32,13 +44,9 @@ const Card = ({ image, title, intro, date, likes }) => {
         {/* Footer */}
         <div className='flex justify-between items-center mt-4 text-sm text-gray-600'>
           <span>{date}</span>
-          <div className='flex items-center space-x-1'>
+          <div className='flex items-center space-x-1' onClick={toggleLike}>
             <span>{likeCount}</span>
-            <Heart
-              size={16}
-              onClick={toggleLike}
-              className={`cursor-pointer transition-all ${liked ? 'text-red-500 fill-red-500' : 'text-gray-400'}`}
-            />
+            <Heart size={16} className={`transition-all ${liked ? 'text-red-500 fill-red-500' : 'text-gray-400'}`} />
           </div>
         </div>
       </div>
