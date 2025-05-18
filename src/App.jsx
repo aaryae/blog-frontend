@@ -1,5 +1,6 @@
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import AdminDashboard from './ui/admin/organisms/AdminDashboard'
+import ProtectedRoute from './ui/ProtectedRoute'
 import ForgotPassword from './ui/user/organisms/auth/ForgotPassword'
 import Login from './ui/user/organisms/auth/Login'
 import Register from './ui/user/organisms/auth/Register'
@@ -17,21 +18,38 @@ const router = createBrowserRouter([
     element: <LandingTemplate />,
     children: [
       { index: true, element: <LandingPage /> },
+
       {
         path: '/food',
-        element: <FoodPage />,
+        element: (
+          <ProtectedRoute>
+            <FoodPage />
+          </ProtectedRoute>
+        ),
       },
       {
         path: '/business',
-        element: <BusinessPage />,
+        element: (
+          <ProtectedRoute>
+            <BusinessPage />
+          </ProtectedRoute>
+        ),
       },
       {
         path: '/technology',
-        element: <TechnologyPage />,
+        element: (
+          <ProtectedRoute>
+            <TechnologyPage />
+          </ProtectedRoute>
+        ),
       },
       {
         path: '/political',
-        element: <Politicalpage />,
+        element: (
+          <ProtectedRoute>
+            <Politicalpage />
+          </ProtectedRoute>
+        ),
       },
       {
         path: '/register',
@@ -53,7 +71,11 @@ const router = createBrowserRouter([
   },
   {
     path: '/admin',
-    element: <AdminDashboard />,
+    element: (
+      <ProtectedRoute silent>
+        <AdminDashboard />
+      </ProtectedRoute>
+    ),
   },
 ])
 
