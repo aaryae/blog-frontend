@@ -13,6 +13,7 @@ import LandingPage from './ui/user/pages/LandingPage'
 import Politicalpage from './ui/user/pages/Politicalpage'
 import TechnologyPage from './ui/user/pages/TechnologyPage'
 import LandingTemplate from './ui/user/templates/Landing.Template'
+import Profile from './ui/user/organisms/auth/Profile'
 
 const router = createBrowserRouter([
   {
@@ -60,6 +61,14 @@ const router = createBrowserRouter([
           <CardDetails />
           // </ProtectedRoute>
         ),
+      },
+      {
+        path:'/profile',
+        element:(
+          <ProtectedRoute>
+            <Profile/>
+          </ProtectedRoute>
+        )
       },
       {
         path: '/register',

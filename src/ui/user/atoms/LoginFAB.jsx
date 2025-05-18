@@ -1,9 +1,17 @@
 import { LogIn, User, UserPlus } from 'lucide-react'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 
 const LoginFAB = () => {
   const [hovered, setHovered] = useState(false)
+  const [isLoggedIn, setIsLoggedIn] = useState(false)
+
+  useEffect(() => {
+    const token = localStorage.getItem('token')
+    setIsLoggedIn(!!token)
+  }, [])
+
+  if (isLoggedIn) return null // 🔒 Hide if logged in
 
   return (
     <div
