@@ -14,6 +14,7 @@ import LandingPage from './ui/user/pages/LandingPage'
 import Politicalpage from './ui/user/pages/Politicalpage'
 import TechnologyPage from './ui/user/pages/TechnologyPage'
 import LandingTemplate from './ui/user/templates/Landing.Template'
+import AddPost from './ui/common/AddPost'
 
 const router = createBrowserRouter([
   {
@@ -67,6 +68,14 @@ const router = createBrowserRouter([
         element: (
           // <ProtectedRoute>
           <Profile />
+          // </ProtectedRoute>
+        ),
+      },
+      {
+        path: '/addpost',
+        element: (
+          // <ProtectedRoute>
+          <AddPost />
           // </ProtectedRoute>
         ),
       },
