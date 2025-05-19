@@ -42,7 +42,7 @@ export default function Navbar() {
               <ul
                 className='absolute top-full left-0 mt-2 w-48 bg-white border border-gray-200 rounded-md shadow-lg z-50
                 opacity-0 group-hover:opacity-100 transform -translate-y-2 group-hover:translate-y-0
-                transition-all duration-200 ease-in-out pointer-events-none group-hover:pointer-events-auto'
+                transition-all duration-200 ease-in-out '
               >
                 {['Food', 'Technology', 'Business', 'Political'].map((category) => (
                   <li key={category}>

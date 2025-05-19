@@ -1,15 +1,4 @@
-import {
-  CalendarDays,
-  Globe,
-  Info,
-  Mail,
-  MapPin,
-  Phone,
-  User2,
-  Pencil,
-  Trash2,
-  Lock
-} from 'lucide-react'
+import { CalendarDays, Globe, Info, Lock, Mail, MapPin, Pencil, Phone, Trash2, User2 } from 'lucide-react'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import SecondHeading from '../../atoms/SecondHeading'
@@ -60,11 +49,7 @@ const Profile = () => {
   }
 
   // Form for Change Password
-  const {
-    register: registerPassword,
-    handleSubmit: handlePasswordSubmit,
-    reset: resetPassword,
-  } = useForm()
+  const { register: registerPassword, handleSubmit: handlePasswordSubmit, reset: resetPassword } = useForm()
 
   const onPasswordSubmit = (data) => {
     console.log('Password change data:', data)
@@ -88,24 +73,24 @@ const Profile = () => {
         <ProfileItem icon={<CalendarDays size={24} />} label='Joined' value={user.joined} />
 
         {/* Action Buttons */}
-        <div className='flex gap-4 pt-10'>
+        <div className='flex flex-wrap gap-3 pt-10'>
           <button
             onClick={() => setShowPasswordModal(true)}
-            className='flex items-center gap-2 bg-yellow-100 text-yellow-800 px-4 py-2 rounded-lg hover:bg-yellow-200 transition'
+            className='bg-white border-2 border-[#991010] text-[#991010] py-3 px-6 rounded-lg hover:-translate-y-1 hover:bg-[#991010] hover:text-white transition-all flex items-center gap-2'
           >
             <Lock size={18} /> Change Password
           </button>
 
           <button
             onClick={() => setShowUpdateModal(true)}
-            className='flex items-center gap-2 bg-blue-100 text-blue-800 px-4 py-2 rounded-lg hover:bg-blue-200 transition'
+            className='bg-white border-2 border-[#991010] text-[#991010]  py-3 px-6 rounded-lg hover:-translate-y-1 hover:bg-[#991010] hover:text-white transition-all flex items-center gap-2'
           >
             <Pencil size={18} /> Update Profile
           </button>
 
           <button
             onClick={handleDelete}
-            className='flex items-center gap-2 bg-red-100 text-red-800 px-4 py-2 rounded-lg hover:bg-red-200 transition'
+            className='bg-[#991010] text-white py-3 px-6 rounded-lg hover:-translate-y-1 hover:bg-[#742e24] transition-all flex items-center gap-2'
           >
             <Trash2 size={18} /> Delete Account
           </button>
@@ -116,15 +101,74 @@ const Profile = () => {
       {showUpdateModal && (
         <Modal title='Update Profile' onClose={() => setShowUpdateModal(false)}>
           <form onSubmit={handleUpdateSubmit(onUpdateSubmit)} className='space-y-4'>
-            <input {...registerUpdate('firstName')} placeholder='First Name' className='input' />
-            <input {...registerUpdate('lastName')} placeholder='Last Name' className='input' />
-            <input {...registerUpdate('phone')} placeholder='Phone' className='input' />
-            <input {...registerUpdate('nationality')} placeholder='Nationality' className='input' />
-            <input {...registerUpdate('address')} placeholder='Address' className='input' />
-            <textarea {...registerUpdate('about')} placeholder='About' className='input' />
-            <div className='flex justify-end gap-2 pt-4'>
-              <button type='submit' className='bg-blue-600 text-white px-4 py-2 rounded'>Save</button>
-              <button type='button' className='bg-gray-300 px-4 py-2 rounded' onClick={() => setShowUpdateModal(false)}>Cancel</button>
+            <div>
+              <label className='block text-sm font-medium text-gray-700 mb-1'>First Name</label>
+              <input
+                {...registerUpdate('firstName')}
+                placeholder='First Name'
+                className='w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#991010] focus:outline-none'
+              />
+            </div>
+
+            <div>
+              <label className='block text-sm font-medium text-gray-700 mb-1'>Last Name</label>
+              <input
+                {...registerUpdate('lastName')}
+                placeholder='Last Name'
+                className='w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#991010] focus:outline-none'
+              />
+            </div>
+
+            <div>
+              <label className='block text-sm font-medium text-gray-700 mb-1'>Phone</label>
+              <input
+                {...registerUpdate('phone')}
+                placeholder='Phone'
+                className='w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#991010] focus:outline-none'
+              />
+            </div>
+
+            <div>
+              <label className='block text-sm font-medium text-gray-700 mb-1'>Nationality</label>
+              <input
+                {...registerUpdate('nationality')}
+                placeholder='Nationality'
+                className='w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#991010] focus:outline-none'
+              />
+            </div>
+
+            <div>
+              <label className='block text-sm font-medium text-gray-700 mb-1'>Address</label>
+              <input
+                {...registerUpdate('address')}
+                placeholder='Address'
+                className='w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#991010] focus:outline-none'
+              />
+            </div>
+
+            <div>
+              <label className='block text-sm font-medium text-gray-700 mb-1'>About</label>
+              <textarea
+                {...registerUpdate('about')}
+                placeholder='Tell us something about you...'
+                className='w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#991010] focus:outline-none resize-none min-h-[80px]'
+              />
+            </div>
+
+            <div className='flex justify-end gap-3 pt-4'>
+              <button
+                type='submit'
+                className='bg-[#991010] text-white py-3 px-6 rounded-lg hover:-translate-y-1 hover:bg-[#742e24] transition-all'
+              >
+                Save Changes
+              </button>
+              <button
+                type='button'
+                className='bg-gray-200 text-gray-700 py-3 px-6 rounded-lg hover:bg-gray-300 transition-all'
+                onClick={() => setShowUpdateModal(false)}
+              >
+                Cancel
+              </button>
             </div>
           </form>
         </Modal>
@@ -134,12 +178,50 @@ const Profile = () => {
       {showPasswordModal && (
         <Modal title='Change Password' onClose={() => setShowPasswordModal(false)}>
           <form onSubmit={handlePasswordSubmit(onPasswordSubmit)} className='space-y-4'>
-            <input {...registerPassword('oldPassword')} placeholder='Old Password' type='password' className='input' />
-            <input {...registerPassword('newPassword')} placeholder='New Password' type='password' className='input' />
-            <input {...registerPassword('confirmPassword')} placeholder='Confirm Password' type='password' className='input' />
-            <div className='flex justify-end gap-2 pt-4'>
-              <button type='submit' className='bg-yellow-600 text-white px-4 py-2 rounded'>Update</button>
-              <button type='button' className='bg-gray-300 px-4 py-2 rounded' onClick={() => setShowPasswordModal(false)}>Cancel</button>
+            <div>
+              <label className='block text-sm font-medium text-gray-700 mb-1'>Old Password</label>
+              <input
+                {...registerPassword('oldPassword')}
+                type='password'
+                placeholder='Enter current password'
+                className='w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#991010] focus:outline-none'
+              />
+            </div>
+
+            <div>
+              <label className='block text-sm font-medium text-gray-700 mb-1'>New Password</label>
+              <input
+                {...registerPassword('newPassword')}
+                type='password'
+                placeholder='Enter new password'
+                className='w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#991010] focus:outline-none'
+              />
+            </div>
+
+            <div>
+              <label className='block text-sm font-medium text-gray-700 mb-1'>Confirm Password</label>
+              <input
+                {...registerPassword('confirmPassword')}
+                type='password'
+                placeholder='Re-enter new password'
+                className='w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#991010] focus:outline-none'
+              />
+            </div>
+
+            <div className='flex justify-end gap-3 pt-4'>
+              <button
+                type='submit'
+                className='bg-[#991010] text-white py-3 px-6 rounded-lg hover:-translate-y-1 hover:bg-[#742e24] transition-all'
+              >
+                Update Password
+              </button>
+              <button
+                type='button'
+                className='bg-gray-200 text-gray-700 py-3 px-6 rounded-lg hover:bg-gray-300 transition-all'
+                onClick={() => setShowPasswordModal(false)}
+              >
+                Cancel
+              </button>
             </div>
           </form>
         </Modal>

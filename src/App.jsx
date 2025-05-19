@@ -4,6 +4,7 @@ import AdminDashboard from './ui/admin/organisms/AdminDashboard'
 import ProtectedRoute from './ui/ProtectedRoute'
 import ForgotPassword from './ui/user/organisms/auth/ForgotPassword'
 import Login from './ui/user/organisms/auth/Login'
+import Profile from './ui/user/organisms/auth/Profile'
 import Register from './ui/user/organisms/auth/Register'
 import CardDetails from './ui/user/organisms/CardDetails'
 import ContactUs from './ui/user/organisms/ContactUs'
@@ -13,7 +14,6 @@ import LandingPage from './ui/user/pages/LandingPage'
 import Politicalpage from './ui/user/pages/Politicalpage'
 import TechnologyPage from './ui/user/pages/TechnologyPage'
 import LandingTemplate from './ui/user/templates/Landing.Template'
-import Profile from './ui/user/organisms/auth/Profile'
 
 const router = createBrowserRouter([
   {
@@ -63,12 +63,12 @@ const router = createBrowserRouter([
         ),
       },
       {
-        path:'/profile',
-        element:(
-          <ProtectedRoute>
-            <Profile/>
-          </ProtectedRoute>
-        )
+        path: '/profile',
+        element: (
+          // <ProtectedRoute>
+          <Profile />
+          // </ProtectedRoute>
+        ),
       },
       {
         path: '/register',
