@@ -24,11 +24,7 @@ export const getAllBlogs = async () => {
   return res.data
 }
 
-// Fetch blog by ID (admin view)
-export const getBlogById = async (postId) => {
-  const res = await axiosInstance.get(`/post/getById/${postId}`)
-  return res.data
-}
+
 
 // Delete blog by ID
 export const deleteBlog = async (postId) => {
