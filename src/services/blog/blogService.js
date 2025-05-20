@@ -33,3 +33,9 @@ export const filterBlogsByTitle = async (keyword) => {
   const res = await axiosInstance.get(`/post/filterByTitle/${keyword}`)
   return res.data
 }
+
+// Like blog post by ID
+export const likeBlogPost = async (postId) => {
+  const res = await axiosInstance.get(`/user/react/add/${postId}`)
+  return res.data
+}

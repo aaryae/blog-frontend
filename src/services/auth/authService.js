@@ -11,3 +11,13 @@ export const signIn = async (credentials) => {
   const response = await axiosInstance.post('/user/auth/sign-in', credentials)
   return response.data
 }
+
+// Forgot password API
+export const forgotPassword = async ({ email, password }) => {
+  const response = await axiosInstance.post('/user/auth/forget-password', {
+    email,
+    password,
+  })
+  return response.data
+}
+
