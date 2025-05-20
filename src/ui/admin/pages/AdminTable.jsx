@@ -1,10 +1,8 @@
 import { useEffect, useState } from 'react'
-import { ShieldCheck, UserCircle2, CheckCircle2 } from 'lucide-react'
+import { ShieldCheck, UserCircle2 } from 'lucide-react'
 import {
   getAllUsers,
-  verifyUser,
   getUsersByStatus,
-  filterUsersByDate,
 } from '../../../services/admin/adminService'
 import toast from 'react-hot-toast'
 
@@ -27,18 +25,8 @@ const AdminTable = () => {
 
   useEffect(() => {
     fetchUsers()
+    // eslint-disable-next-line
   }, [statusFilter])
-
-  const handleVerify = async (userId) => {
-    try {
-      await verifyUser(userId)
-      toast.success('✅ User verified successfully')
-      fetchUsers() // Refresh data
-    } catch (err) {
-      toast.error('❌ Verification failed')
-      console.error(err)
-    }
-  }
 
   return (
     <div className='bg-white rounded-xl shadow-lg p-6 w-full'>
@@ -52,8 +40,6 @@ const AdminTable = () => {
         >
           <option value='ALL'>All Status</option>
           <option value='ACTIVE'>Active</option>
-          <option value='INACTIVE'>Inactive</option>
-          <option value='PENDING'>Pending</option>
         </select>
       </div>
 
@@ -69,7 +55,7 @@ const AdminTable = () => {
               <th className='px-4 py-3 text-left'>Contact</th>
               <th className='px-4 py-3 text-left'>Address</th>
               <th className='px-4 py-3 text-left'>Description</th>
-              <th className='px-4 py-3 text-left'>Actions</th>
+              {/* No Actions column needed */}
             </tr>
           </thead>
           <tbody className='text-sm text-gray-700'>
@@ -85,7 +71,7 @@ const AdminTable = () => {
                   <span
                     className={`inline-flex items-center gap-1 px-2 py-1 rounded text-xs font-medium ${
                       user.role === 'ADMIN'
-                        ? 'bg-red-100 text-red-700'
+                        ? 'bg-gray-200 text-gray-900'
                         : 'bg-blue-100 text-blue-700'
                     }`}
                   >
@@ -98,8 +84,6 @@ const AdminTable = () => {
                     className={`px-2 py-1 rounded text-xs font-semibold ${
                       user.status === 'ACTIVE'
                         ? 'bg-green-100 text-green-700'
-                        : user.status === 'PENDING'
-                        ? 'bg-yellow-100 text-yellow-700'
                         : 'bg-gray-100 text-gray-600'
                     }`}
                   >
@@ -109,16 +93,6 @@ const AdminTable = () => {
                 <td className='px-4 py-3'>{user.contactNumber || '—'}</td>
                 <td className='px-4 py-3'>{user.address || '—'}</td>
                 <td className='px-4 py-3'>{user.description || '—'}</td>
-                <td className='px-4 py-3'>
-                  {user.status === 'PENDING' && (
-                    <button
-                      onClick={() => handleVerify(user.id)}
-                      className='text-xs bg-green-600 text-white px-3 py-1 rounded hover:bg-green-700'
-                    >
-                      Verify
-                    </button>
-                  )}
-                </td>
               </tr>
             ))}
           </tbody>
