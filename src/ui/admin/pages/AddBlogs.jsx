@@ -1,62 +1,31 @@
 import { useForm } from "react-hook-form"
 import toast from "react-hot-toast"
-import { useEffect, useState } from "react"
-import { addBlogPost, getAllCategories } from "../../../services/blog/blogService"
+import { addBlogPost } from "../../../services/blog/blogService"
 
 const CATEGORY_OPTIONS = [
-  { label: "Food", keyword: "food" },
-  { label: "Business", keyword: "business" },
-  { label: "Technology", keyword: "technology" },
-  { label: "Political", keyword: "political" },
-  { label: "Others", keyword: "others" }, // Always keep "Others" last
+  { label: "Food", value: "FOOD" },
+  { label: "Business", value: "BUSINESS" },
+  { label: "Technology", value: "TECHNOLOGY" },
+  { label: "Political", value: "POLITICAL" },
+  { label: "Others", value: "OTHERS" }, // Always keep "Others" last
 ]
-const OTHERS_CATEGORY_ID = 8
 
 const AddBlog = ({ onSuccess }) => {
   const { register, handleSubmit, reset } = useForm()
-  const [categories, setCategories] = useState([])
-  const [loading, setLoading] = useState(true)
-
-  // Fetch categories from backend
-  useEffect(() => {
-    (async () => {
-      try {
-        const cats = await getAllCategories()
-        setCategories(cats)
-      } catch {
-        setCategories([])
-      } finally {
-        setLoading(false)
-      }
-    })()
-  }, [])
-
-  // Helper: Get correct categoryId based on dropdown selection and backend list
-  const getCategoryId = (selectedLabel) => {
-    // Match selected label with fetched category (case-insensitive, substring ok)
-    if (!categories || categories.length === 0) return OTHERS_CATEGORY_ID
-    const cat = categories.find(
-      c =>
-        c.categoryTitle &&
-        c.categoryTitle.toLowerCase().includes(selectedLabel.toLowerCase())
-    )
-    return cat?.id || OTHERS_CATEGORY_ID
-  }
 
   const onSubmit = async (data) => {
     try {
       const formData = new FormData()
       formData.append('image', data.image[0])
 
-      // Use the mapping to find the backend category ID, or fallback to OTHERS
-      const selectedLabel = data.category
-      const categoryId = getCategoryId(selectedLabel)
+      // Directly use the enum value as categoryId
+      const categoryId = data.category
 
       const postDto = {
         title: data.title,
         content: data.content,
         userId: 1, // TODO: Get from context/auth
-        categoryId
+        categoryId // enum value, e.g., "FOOD"
       }
 
       formData.append('postDto', new Blob([JSON.stringify(postDto)], { type: 'application/json' }))
@@ -95,11 +64,10 @@ const AddBlog = ({ onSuccess }) => {
         <select
           {...register("category", { required: true })}
           className="w-full px-4 py-2 border rounded"
-          disabled={loading}
         >
           <option value="">Select Category</option>
           {CATEGORY_OPTIONS.map(opt => (
-            <option key={opt.label} value={opt.label}>{opt.label}</option>
+            <option key={opt.value} value={opt.value}>{opt.label}</option>
           ))}
         </select>
       </div>

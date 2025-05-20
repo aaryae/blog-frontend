@@ -1,8 +1,9 @@
 import { useLocation } from 'react-router-dom'
+import CommentSection from './CommentSection'
 
 const CardDetails = () => {
   const { state } = useLocation()
-  const { image, title, intro, date, likes } = state || {}
+  const { id, image, title, intro, date, likes } = state || {}
 
   if (!state) {
     return (
@@ -20,7 +21,10 @@ const CardDetails = () => {
       <h1 className='text-3xl font-bold text-[#af4133] mb-2'>{title}</h1>
       <p className='text-sm text-gray-600 mb-4'>By Admin • {date}</p>
       <p className='text-base text-gray-800 leading-relaxed mb-8'>{intro}</p>
-      <p className='text-sm text-gray-500'>❤️ {likes} people liked this post</p>
+      <p className='text-sm text-gray-500 mb-10'>❤️ {likes} people liked this post</p>
+
+      {/* Comment Section */}
+      <CommentSection postId={id} />
     </div>
   )
 }

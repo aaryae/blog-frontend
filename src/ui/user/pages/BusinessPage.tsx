@@ -1,7 +1,11 @@
+import LoginFAB from '../atoms/LoginFAB'
 import BlogStructure from '../organisms/blog/BlogStructure'
 
 const BusinessPage = () => {
-  return <BlogStructure heading='business' />
+  return(<>
+  <LoginFAB/>
+   <BlogStructure heading='business' />
+  </>)
 }
 
 export default BusinessPage

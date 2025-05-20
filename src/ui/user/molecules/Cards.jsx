@@ -14,7 +14,7 @@ const Card = ({ image, title, intro, date, likes }) => {
   }
 
   const handleCardClick = () => {
-    navigate('/card-details', {
+    navigate('/card-detail', {
       state: { image, title, intro, date, likes: likeCount },
     })
   }
@@ -43,7 +43,7 @@ const Card = ({ image, title, intro, date, likes }) => {
 
         {/* Footer */}
         <div className='flex justify-between items-center mt-4 text-sm text-gray-600'>
-          <span>{date}</span>
+<span>{(date?.match(/[^\.!\?]+[\.!\?]+/g) || [date]).slice(0, 15).join(' ')}</span>
           <div className='flex items-center space-x-1' onClick={toggleLike}>
             <span>{likeCount}</span>
             <Heart size={16} className={`transition-all ${liked ? 'text-red-500 fill-red-500' : 'text-gray-400'}`} />

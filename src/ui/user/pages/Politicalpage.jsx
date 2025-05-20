@@ -1,7 +1,11 @@
+import LoginFAB from '../atoms/LoginFAB'
 import BlogStructure from '../organisms/blog/BlogStructure'
 
 const Politicalpage = () => {
-  return <BlogStructure heading='political' />
+  return(
+      <><LoginFAB /><BlogStructure heading='political' /></>
+
+  ) 
 }
 
 export default Politicalpage

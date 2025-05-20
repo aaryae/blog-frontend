@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react'
 import { PlusCircle, RefreshCcw, Search, Loader } from 'lucide-react'
 import AddBlog from './AddBlogs'
-import AddCategory from './AddCatagory'
 import {
   getAllBlogs,
   deleteBlog,
@@ -10,7 +9,6 @@ import {
 
 const ManageBlogs = () => {
   const [showAddBlog, setShowAddBlog] = useState(false)
-  const [showAddCategory, setShowAddCategory] = useState(false)
   const [blogs, setBlogs] = useState([])
   const [loading, setLoading] = useState(false)
   const [search, setSearch] = useState('')
@@ -45,7 +43,6 @@ const ManageBlogs = () => {
     setShowAddBlog(false)
     fetchBlogs()
   }
-  const handleCategoryAdded = () => setShowAddCategory(false)
 
   // Handle blog delete with confirmation
   const handleDelete = async (postId) => {
@@ -100,19 +97,10 @@ const ManageBlogs = () => {
             disabled={loading}
             title="Refresh"
           >
-
-        
             <RefreshCcw size={16} />
           </button>
         </form>
         <div className="flex gap-2">
-          <button
-            onClick={() => setShowAddCategory(true)}
-            className="flex items-center gap-2 bg-gray-200 hover:bg-grey-300 text-black py-2 px-5 rounded-md transition-all"
-            disabled={loading}
-          >
-            Add Category
-          </button>
           <button
             onClick={() => setShowAddBlog(true)}
             className="flex items-center gap-2 bg-[#991010] hover:bg-[#742e24] text-white py-2 px-5 rounded-md transition-all"
@@ -185,7 +173,6 @@ const ManageBlogs = () => {
                         : '—'}
                     </td>
                     <td className="px-4 py-3 flex gap-2">
-                    
                       <button
                         className="text-red-600 hover:underline"
                         onClick={() => handleDelete(blog.id)}
@@ -217,20 +204,6 @@ const ManageBlogs = () => {
         </div>
       )}
 
-      {/* Add Category Modal */}
-      {showAddCategory && (
-        <div className="fixed inset-0 bg-black/30 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-lg relative">
-            <button
-              className="absolute top-3 right-3 text-gray-500 hover:text-blue-700 text-xl"
-              onClick={() => setShowAddCategory(false)}
-            >
-              &times;
-            </button>
-            <AddCategory onSuccess={handleCategoryAdded} />
-          </div>
-        </div>
-      )}
     </div>
   )
 }

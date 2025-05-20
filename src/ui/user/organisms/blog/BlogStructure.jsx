@@ -1,88 +1,77 @@
-import image from '../../../../assets/bg.jpg'
+import React, { useEffect, useState } from 'react'
 import SecondHeading from '../../atoms/SecondHeading'
 import Card from '../../molecules/Cards'
 import Heroblog from '../../organisms/blog/Heroblog'
+import { getBlogsByCategory } from '../../../../services/blog/blogService'
+
+const getImageUrl = (imageName) =>
+  imageName ? `http://localhost:8080/api/post/image/${imageName}` : undefined
 
 const BlogStructure = ({ heading }) => {
-  // ⛳ Example dynamic data from backend
-  const blogPosts = [
-    {
-      id: 1,
-      title: 'This is the intro',
-      intro: 'Lorem ipsum is one of the greatest...',
-      date: '2018/04/20',
-      likes: 122,
-      image,
-    },
-    {
-      id: 2,
-      title: 'Another Insight',
-      intro: 'Planting wisdom through pixels...',
-      date: '2019/01/12',
-      likes: 90,
-      image,
-    },
-    {
-      id: 2,
-      title: 'Another Insight',
-      intro: 'Planting wisdom through pixels...',
-      date: '2019/01/12',
-      likes: 90,
-      image,
-    },
-    {
-      id: 2,
-      title: 'Another Insight',
-      intro: 'Planting wisdom through pixels...',
-      date: '2019/01/12',
-      likes: 90,
-      image,
-    },
-    {
-      id: 2,
-      title: 'Another Insight',
-      intro: 'Planting wisdom through pixels...',
-      date: '2019/01/12',
-      likes: 90,
-      image,
-    },
-    // ...more blogs
-  ]
+  const [blogPosts, setBlogPosts] = useState([])
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const res = await getBlogsByCategory(heading?.toUpperCase() || 'FOOD')
+        setBlogPosts(res)
+      } catch {
+        setBlogPosts([])
+      }
+    }
+    fetchData()
+  }, [heading])
+
+  const formatDate = (dateStr) => {
+    if (!dateStr) return ''
+    const date = new Date(dateStr)
+    return date.toLocaleDateString('en-GB', {
+      day: '2-digit',
+      month: 'long',
+      year: 'numeric'
+    })
+  }
+
+  // Optional: Take first post as hero, others as cards
+  const heroPost = blogPosts[0]
+  const otherPosts = blogPosts.slice(1)
 
   return (
     <>
       <Heroblog />
       <div className='max-w-7xl mx-auto pt-20'>
-        <SecondHeading value='food' />
+        <SecondHeading value={heading || 'food'} />
 
         {/* Background Image Hero */}
-        <div
-          className='relative h-[30rem] rounded-lg flex flex-col justify-end p-6 text-white max-w-6xl mx-auto overflow-hidden'
-          style={{
-            backgroundImage: `url(${image})`,
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-          }}
-        >
-          <div className='relative z-10'>
-            <span className='text-[#af4133] font-bold text-xl uppercase mb-2 tracking-widest'>Title</span>
-            <h2 className='text-2xl font-bold mb-2'>this is going to be heading</h2>
-            <p className='text-sm font-semibold'>
-              JOHN DOE • <span className='font-normal'>20 APRIL 2018</span>
-            </p>
+        {heroPost && (
+          <div
+            className='relative h-[30rem] rounded-lg flex flex-col justify-end p-6 text-white max-w-6xl mx-auto overflow-hidden'
+            style={{
+              backgroundImage: `url(${getImageUrl(heroPost.imageName)})`,
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
+            }}
+          >
+            <div className='relative z-10'>
+              <span className='text-[#af4133] font-bold text-xl uppercase mb-2 tracking-widest'>{heroPost.categoryId}</span>
+              <h2 className='text-2xl font-bold mb-2'>{heroPost.title}</h2>
+              <p className='text-sm font-semibold'>
+                USER {heroPost.userId} • <span className='font-normal'>{formatDate(heroPost.createdDate)}</span>
+              </p>
+            </div>
           </div>
-        </div>
+        )}
 
         {/* Dynamic Blog Cards */}
         <div className='max-w-6xl mx-auto py-8'>
           <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6'>
-            {blogPosts.map((post) => (
+            {otherPosts.map((post) => (
               <Card
                 key={post.id}
-                image={post.image}
+                image={getImageUrl(post.imageName)}
                 title={post.title}
-                intro={post.intro}
-                date={post.date}
+                intro={post.content}
+                date={formatDate(post.createdDate)}
                 likes={post.likes}
               />
             ))}

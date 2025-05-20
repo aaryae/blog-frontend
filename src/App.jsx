@@ -19,7 +19,6 @@ import AdminRoute from './ui/admin/AdminRoute'
 import AdminDashboard from './ui/admin/pages/AdminDashboard'
 import AdminTable from './ui/admin/pages/AdminTable'
 import ManageBlogs from './ui/admin/pages/ManageBlog'
-import AddCategory from './ui/admin/pages/AddCatagory'
 
 const router = createBrowserRouter([
   {
@@ -53,7 +52,7 @@ const router = createBrowserRouter([
         ),
       },
       {
-        path: '/political',
+        path: '/politics',
         element: (
           <ProtectedRoute>
             <Politicalpage />
@@ -61,7 +60,7 @@ const router = createBrowserRouter([
         ),
       },
       {
-        path: '/card-details',
+        path: '/card-detail',
         element: (
           // <ProtectedRoute>
           <CardDetails />
@@ -112,7 +111,6 @@ const router = createBrowserRouter([
         {index:true, element:<AdminDashboard/>},
         {path:"users", element:<AdminTable/>},
         {path:"manage-blogs", element:<ManageBlogs/>},
-        {path:"add-catagory", element:<AddCategory/>},
 
       ]
     }

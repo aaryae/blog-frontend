@@ -1,121 +1,135 @@
-import { useForm } from 'react-hook-form'
+import React, { useState } from 'react'
 import toast from 'react-hot-toast'
-import { useState } from 'react'
-import { addBlogPost, getAllCategories } from '../../services/blog/blogService'
+import { addBlogPost } from '../../services/blog/blogService'
 
-const USER_ID = 2
 const CATEGORY_OPTIONS = [
-  { label: 'Food', value: 'Food' },
-  { label: 'Business', value: 'Business' },
-  { label: 'Technology', value: 'Technology' },
-  { label: 'Political', value: 'Political' },
-  { label: 'Others', value: 'Others' },
+  { label: "Food", value: "FOOD" },
+  { label: "Business", value: "BUSINESS" },
+  { label: "Technology", value: "TECHNOLOGY" },
+  { label: "Politics", value: "POLITICS" },
+  { label: "Others", value: "OTHERS" }
 ]
-const OTHERS_CATEGORY_ID = 8 // fallback ID
 
-const AddPost = () => {
-  const { register, handleSubmit, reset } = useForm()
-  const [isSubmitting, setIsSubmitting] = useState(false)
+const AddPost = ({ onSuccess }) => {
+  const [title, setTitle] = useState('')
+  const [content, setContent] = useState('')
+  const [categoryId, setCategoryId] = useState(CATEGORY_OPTIONS[0].value)
+  const [image, setImage] = useState(null)
+  const [loading, setLoading] = useState(false)
 
-  const onSubmit = async (data) => {
-    setIsSubmitting(true)
-    let categoryId = OTHERS_CATEGORY_ID // Default fallback
-
+  const getUserId = () => {
+    const raw = localStorage.getItem('userId')
     try {
-      // 1. Fetch all categories
-      const categories = await getAllCategories()
-
-      // 2. Try to find category by title (case-insensitive)
-      const found = categories.find(
-        (cat) => cat.categoryTitle?.toLowerCase() === data.category?.toLowerCase()
-      )
-
-      // 3. If found, use its ID, else fallback to 8 (Others)
-      if (found) {
-        categoryId = found.id
-      }
-
-    } catch (e) {
-      // If API fails, fallback to Others
-      categoryId = OTHERS_CATEGORY_ID
+      const parsed = JSON.parse(raw)
+      return parsed || raw
+    } catch {
+      return raw
     }
+  }
+
+  const handleImageChange = (e) => {
+    setImage(e.target.files[0])
+  }
+
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+    setLoading(true)
 
     try {
-      // Prepare formData as before
-      const formData = new FormData()
-      formData.append('image', data.image[0])
-      const postDto = {
-        title: data.title,
-        content: data.content,
-        userId: USER_ID,
-        categoryId,
+      const userId = getUserId()
+      if (!userId) {
+        toast.error("❌ User not logged in.")
+        setLoading(false)
+        return
       }
-      formData.append('postDto', new Blob([JSON.stringify(postDto)], { type: 'application/json' }))
+
+      const postDto = { title, content, userId, categoryId }
+      const postDtoBlob = new Blob([JSON.stringify(postDto)], { type: "application/json" })
+      const formData = new FormData()
+      formData.append('image', image)
+      formData.append('postDto', postDtoBlob)
 
       await addBlogPost(formData)
       toast.success('✅ Post added successfully!')
-      reset()
+      setTitle('')
+      setContent('')
+      setImage(null)
+      setCategoryId(CATEGORY_OPTIONS[0].value)
+      if (onSuccess) onSuccess()
     } catch (err) {
-      toast.error('❌ Failed to add post')
+      toast.error('❌ Failed to add post. Please try again.')
+    } finally {
+      setLoading(false)
     }
-    setIsSubmitting(false)
   }
 
   return (
-    <div className='max-w-2xl mx-auto p-6 bg-white shadow-xl rounded-2xl mt-10'>
-      <h2 className='text-3xl font-bold mb-6 text-[#991010] text-center'>Create New Blog Post</h2>
-      <form onSubmit={handleSubmit(onSubmit)} className='space-y-5'>
-        <div>
-          <label className='block text-sm font-medium text-gray-700 mb-1'>Post Title</label>
+    <div className="flex justify-center items-center min-h-screen bg-[#fafafb]">
+      <form 
+        onSubmit={handleSubmit} 
+        className="bg-white shadow-lg rounded-2xl p-10 w-full max-w-lg"
+        style={{ minWidth: 350 }}
+      >
+        <h2 className="text-3xl font-bold mb-6 text-[#22223b] text-center tracking-wide">Add New Post</h2>
+
+        {/* Title */}
+        <div className="mb-4">
+          <label className="block font-semibold mb-1 text-[#22223b]">Title</label>
           <input
-            {...register('title', { required: true })}
-            placeholder='Your post title...'
-            className='w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-[#991010]'
+            type="text"
+            className="block w-full border border-gray-300 rounded px-3 py-2"
+            value={title}
+            onChange={e => setTitle(e.target.value)}
+            required
           />
         </div>
 
-        <div>
-          <label className='block text-sm font-medium text-gray-700 mb-1'>Content</label>
+        {/* Content */}
+        <div className="mb-4">
+          <label className="block font-semibold mb-1 text-[#22223b]">Content</label>
           <textarea
-            {...register('content', { required: true })}
-            placeholder='Write your content here...'
-            rows={6}
-            className='w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-[#991010] resize-none'
+            className="block w-full border border-gray-300 rounded px-3 py-2 h-24 resize-none"
+            value={content}
+            onChange={e => setContent(e.target.value)}
+            required
           />
         </div>
 
-        <div>
-          <label className='block text-sm font-medium text-gray-700 mb-1'>Category</label>
+        {/* Category */}
+        <div className="mb-4">
+          <label className="block font-semibold mb-1 text-[#22223b]">Category</label>
           <select
-            {...register('category', { required: true })}
-            className='w-full px-4 py-2 border rounded-md'
+            className="block w-full border border-gray-300 rounded px-3 py-2"
+            value={categoryId}
+            onChange={e => setCategoryId(e.target.value)}
+            required
           >
-            <option value="">Select Category</option>
-            {CATEGORY_OPTIONS.map((opt) => (
+            {CATEGORY_OPTIONS.map(opt => (
               <option value={opt.value} key={opt.value}>{opt.label}</option>
             ))}
           </select>
         </div>
 
-        <div>
-          <label className='block text-sm font-medium text-gray-700 mb-1'>Upload Image</label>
+        {/* Image (Now at Bottom) */}
+        <div className="mb-6">
+          <label className="block font-semibold mb-1 text-[#22223b]">Image</label>
           <input
-            type='file'
-            accept='image/*'
-            {...register('image', { required: true })}
-            className='w-full text-gray-600'
+            type="file"
+            accept="image/*"
+            onChange={handleImageChange}
+            className="block w-full border border-gray-300 rounded px-3 py-2"
+            required
           />
         </div>
 
-        <div className='text-center pt-4'>
-          <button
-            type='submit'
-            disabled={isSubmitting}
-            className='bg-[#991010] hover:bg-[#742e24] text-white font-medium py-2 px-6 rounded-lg transition-all'
-          >
-            {isSubmitting ? 'Posting...' : 'Submit Post'}
-          </button>
-        </div>
+        {/* Submit */}
+        <button
+          type="submit"
+          className="w-full bg-[#b10018] hover:bg-[#750010] text-white font-bold py-3 rounded-lg transition duration-150"
+          disabled={loading}
+        >
+          {loading ? 'Posting...' : 'Add Post'}
+        </button>
       </form>
     </div>
   )

@@ -1,6 +1,6 @@
 import {
   CalendarDays, Globe, Info, Lock, Mail,
-  MapPin, Pencil, Phone, Trash2, User2
+  MapPin, Pencil, Phone, Trash2, User2, Plus
 } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
@@ -10,10 +10,11 @@ import {
   getUserById,
   updateUser,
   changePassword,
-  deleteUser
+  // deleteUser // Comment out import if not used
 } from '../../../../services/user/userService'
 import ProfileItem from '../../molecules/ProfileItem'
 import Modal from '../../molecules/Modal'
+import { Link } from 'react-router-dom'
 
 const USER_ID = 2 // Replace with auth context in real app
 
@@ -80,18 +81,19 @@ const Profile = () => {
     }
   }
 
-  const handleDelete = async () => {
-    const confirmDelete = confirm('Are you sure you want to delete your account?')
-    if (!confirmDelete) return
-
-    try {
-      await deleteUser(USER_ID)
-      toast.success('✅ Account deleted successfully.')
-      // redirect or logout
-    } catch (err) {
-      toast.error('❌ Failed to delete account.')
-    }
-  }
+  // Commented out the delete user logic as requested
+  // const handleDelete = async () => {
+  //   const confirmDelete = confirm('Are you sure you want to delete your account?')
+  //   if (!confirmDelete) return
+  //
+  //   try {
+  //     await deleteUser(USER_ID)
+  //     toast.success('✅ Account deleted successfully.')
+  //     // redirect or logout
+  //   } catch (err) {
+  //     toast.error('❌ Failed to delete account.')
+  //   }
+  // }
 
   useEffect(() => {
     if (user) {
@@ -137,12 +139,23 @@ const Profile = () => {
             <Pencil size={18} /> Update Profile
           </button>
 
+          {/* Commented out the delete button */}
+          {/* 
           <button
             onClick={handleDelete}
             className='bg-[#991010] text-white py-3 px-6 rounded-lg hover:-translate-y-1 hover:bg-[#742e24] transition-all flex items-center gap-2'
           >
             <Trash2 size={18} /> Delete Account
           </button>
+          */}
+
+          {/* Add Post Button */}
+          <Link
+            to="/addpost"
+            className='bg-[#991010] text-white py-3 px-6 rounded-lg hover:-translate-y-1 hover:bg-[#742e24] transition-all flex items-center gap-2'
+          >
+            <Plus size={18} /> Add Post
+          </Link>
         </div>
       </div>
 
