@@ -1,4 +1,3 @@
-// src/services/admin/adminService.js
 import { axiosInstance } from '../../config/axios'
 
 // Fetch all categories
@@ -16,5 +15,29 @@ export const addCategory = async (payload) => {
 // Add a new blog post (admin)
 export const addBlogPost = async (formData) => {
   const res = await axiosInstance.post('/user/react/post/add', formData)
+  return res.data
+}
+
+// Fetch all blogs (for public/unauthorized)
+export const getAllBlogs = async () => {
+  const res = await axiosInstance.get('/post/postForUnauthorized')
+  return res.data
+}
+
+// Fetch blog by ID (admin view)
+export const getBlogById = async (postId) => {
+  const res = await axiosInstance.get(`/post/getById/${postId}`)
+  return res.data
+}
+
+// Delete blog by ID
+export const deleteBlog = async (postId) => {
+  const res = await axiosInstance.get(`/post/delete/${postId}`)
+  return res.data
+}
+
+// Filter by title (for search)
+export const filterBlogsByTitle = async (keyword) => {
+  const res = await axiosInstance.get(`/post/filterByTitle/${keyword}`)
   return res.data
 }
