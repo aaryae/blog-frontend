@@ -32,24 +32,39 @@ const Login = () => {
     }
   }, [setValue])
 
-  const onSubmit = async (data) => {
-    try {
-      if (rememberMe) {
-        localStorage.setItem('rememberedEmail', data.email)
-      } else {
-        localStorage.removeItem('rememberedEmail')
-      }
-
-      const result = await signIn(data)
-      login(result.token)
-      navigate('/')
-          toast.success('🎉 Login successful!.')
-
-    } catch (error) {
-      console.error('Login error:', error)
-      alert('❌ Invalid email or password.')
+const onSubmit = async (data) => {
+  console.log(data)
+  try {
+    if (rememberMe) {
+      localStorage.setItem('rememberedEmail', data.email)
+    } else {
+      localStorage.removeItem('rememberedEmail')
     }
+
+    const result = await signIn(data)
+
+    // Save data to localStorage
+    localStorage.setItem('accessToken', result.token)
+    localStorage.setItem('refreshToken', result.refreshToken)
+    localStorage.setItem('role', result.roles)
+    localStorage.setItem('userId', result.userId)
+
+    login(result.token)
+
+    toast.success('🎉 Login successful!')
+
+    if (result.roles === 'ADMIN') {
+      navigate('/admin')
+    } else {
+      navigate('/')
+    }
+
+  } catch (error) {
+    console.error('Login error:', error)
+    toast.error('❌ Invalid email or password.')
   }
+}
+
 
   return (
     <div className='min-h-screen flex items-center justify-center bg-gray-50 px-6'>

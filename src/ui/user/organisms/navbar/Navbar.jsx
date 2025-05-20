@@ -11,10 +11,17 @@ export default function Navbar() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
   const navigate = useNavigate()
 
-  const handleLogout = () => {
-    logout()
-    navigate('/login')
+const handleLogout = () => {
+  const rememberedEmail = localStorage.getItem('rememberedEmail')
+  localStorage.clear()
+  if (rememberedEmail) {
+    localStorage.setItem('rememberedEmail', rememberedEmail)
   }
+
+  logout() // your auth context logout method
+  navigate('/login')
+}
+
 
   return (
     <>

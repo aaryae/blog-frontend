@@ -1,54 +1,70 @@
 import { useForm } from 'react-hook-form'
 import toast from 'react-hot-toast'
-import { addBlogPost } from '../../services/blog/blogService'
+import { useState } from 'react'
+import { addBlogPost, getAllCategories } from '../../services/blog/blogService'
 
 const USER_ID = 2
-const CATEGORY_ID = 1
+const CATEGORY_OPTIONS = [
+  { label: 'Food', value: 'Food' },
+  { label: 'Business', value: 'Business' },
+  { label: 'Technology', value: 'Technology' },
+  { label: 'Political', value: 'Political' },
+  { label: 'Others', value: 'Others' },
+]
+const OTHERS_CATEGORY_ID = 8 // fallback ID
 
 const AddPost = () => {
   const { register, handleSubmit, reset } = useForm()
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
- const onSubmit = async (data) => {
-  try {
-    const imageFile = data.image[0]
+  const onSubmit = async (data) => {
+    setIsSubmitting(true)
+    let categoryId = OTHERS_CATEGORY_ID // Default fallback
 
-    const formData = new FormData()
-    formData.append('image', imageFile)
+    try {
+      // 1. Fetch all categories
+      const categories = await getAllCategories()
 
-    const postDto = {
-      title: data.title,
-      content: data.content,
-      userId: USER_ID,
-      categoryId: CATEGORY_ID,
+      // 2. Try to find category by title (case-insensitive)
+      const found = categories.find(
+        (cat) => cat.categoryTitle?.toLowerCase() === data.category?.toLowerCase()
+      )
+
+      // 3. If found, use its ID, else fallback to 8 (Others)
+      if (found) {
+        categoryId = found.id
+      }
+
+    } catch (e) {
+      // If API fails, fallback to Others
+      categoryId = OTHERS_CATEGORY_ID
     }
 
-    const postBlob = new Blob([JSON.stringify(postDto)], { type: 'application/json' })
-    formData.append('postDto', postBlob)
+    try {
+      // Prepare formData as before
+      const formData = new FormData()
+      formData.append('image', data.image[0])
+      const postDto = {
+        title: data.title,
+        content: data.content,
+        userId: USER_ID,
+        categoryId,
+      }
+      formData.append('postDto', new Blob([JSON.stringify(postDto)], { type: 'application/json' }))
 
-    // 🔍 Debug logs
-    console.log('🖼️ Image File:', imageFile)
-    console.log('📝 Post DTO Blob:', postBlob)
-
-    for (let pair of formData.entries()) {
-      console.log(`📦 FormData [${pair[0]}]:`, pair[1])
+      await addBlogPost(formData)
+      toast.success('✅ Post added successfully!')
+      reset()
+    } catch (err) {
+      toast.error('❌ Failed to add post')
     }
-
-    await addBlogPost(formData)
-    toast.success('✅ Post added successfully!')
-    reset()
-  } catch (error) {
-    console.error(error)
-    toast.error('❌ Failed to add post')
+    setIsSubmitting(false)
   }
-}
-
 
   return (
     <div className='max-w-2xl mx-auto p-6 bg-white shadow-xl rounded-2xl mt-10'>
       <h2 className='text-3xl font-bold mb-6 text-[#991010] text-center'>Create New Blog Post</h2>
-
       <form onSubmit={handleSubmit(onSubmit)} className='space-y-5'>
-
         <div>
           <label className='block text-sm font-medium text-gray-700 mb-1'>Post Title</label>
           <input
@@ -69,6 +85,19 @@ const AddPost = () => {
         </div>
 
         <div>
+          <label className='block text-sm font-medium text-gray-700 mb-1'>Category</label>
+          <select
+            {...register('category', { required: true })}
+            className='w-full px-4 py-2 border rounded-md'
+          >
+            <option value="">Select Category</option>
+            {CATEGORY_OPTIONS.map((opt) => (
+              <option value={opt.value} key={opt.value}>{opt.label}</option>
+            ))}
+          </select>
+        </div>
+
+        <div>
           <label className='block text-sm font-medium text-gray-700 mb-1'>Upload Image</label>
           <input
             type='file'
@@ -81,9 +110,10 @@ const AddPost = () => {
         <div className='text-center pt-4'>
           <button
             type='submit'
+            disabled={isSubmitting}
             className='bg-[#991010] hover:bg-[#742e24] text-white font-medium py-2 px-6 rounded-lg transition-all'
           >
-            Submit Post
+            {isSubmitting ? 'Posting...' : 'Submit Post'}
           </button>
         </div>
       </form>

@@ -1,6 +1,5 @@
 import { Toaster } from 'react-hot-toast'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
-import AdminDashboard from './ui/admin/organisms/AdminDashboard'
 import ProtectedRoute from './ui/ProtectedRoute'
 import ForgotPassword from './ui/user/organisms/auth/ForgotPassword'
 import Login from './ui/user/organisms/auth/Login'
@@ -15,6 +14,12 @@ import Politicalpage from './ui/user/pages/Politicalpage'
 import TechnologyPage from './ui/user/pages/TechnologyPage'
 import LandingTemplate from './ui/user/templates/Landing.Template'
 import AddPost from './ui/common/AddPost'
+import AdminTemplate from './ui/admin/templates/AdminTemplate'
+import AdminRoute from './ui/admin/AdminRoute'
+import AdminDashboard from './ui/admin/pages/AdminDashboard'
+import AdminTable from './ui/admin/pages/AdminTable'
+import ManageBlogs from './ui/admin/pages/ManageBlog'
+import AddCategory from './ui/admin/pages/AddCatagory'
 
 const router = createBrowserRouter([
   {
@@ -98,12 +103,20 @@ const router = createBrowserRouter([
     ],
   },
   {
-    path: '/admin',
-    element: (
-      <ProtectedRoute silent>
-        <AdminDashboard />
-      </ProtectedRoute>
-    ),
+    element:<AdminRoute/>,
+   children:[
+    {
+      path:"/admin",
+      element:<AdminTemplate/>,
+      children:[
+        {index:true, element:<AdminDashboard/>},
+        {path:"users", element:<AdminTable/>},
+        {path:"manage-blogs", element:<ManageBlogs/>},
+        {path:"add-catagory", element:<AddCategory/>},
+
+      ]
+    }
+   ]
   },
 ])
 
