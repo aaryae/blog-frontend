@@ -30,33 +30,33 @@ const router = createBrowserRouter([
       {
         path: '/food',
         element: (
-          <ProtectedRoute>
+          // <ProtectedRoute>
             <FoodPage />
-          </ProtectedRoute>
+          // </ProtectedRoute>
         ),
       },
       {
         path: '/business',
         element: (
-          <ProtectedRoute>
+          // <ProtectedRoute>
             <BusinessPage />
-          </ProtectedRoute>
+          // </ProtectedRoute>
         ),
       },
       {
         path: '/technology',
         element: (
-          <ProtectedRoute>
+          // <ProtectedRoute>
             <TechnologyPage />
-          </ProtectedRoute>
+          // </ProtectedRoute>
         ),
       },
       {
         path: '/politics',
         element: (
-          <ProtectedRoute>
+          // <ProtectedRoute>
             <Politicalpage />
-          </ProtectedRoute>
+          // </ProtectedRoute>
         ),
       },
       {
