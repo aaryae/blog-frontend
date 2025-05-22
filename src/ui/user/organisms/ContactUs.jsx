@@ -1,9 +1,9 @@
 import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import * as yup from 'yup'
+import toast from 'react-hot-toast'
 import SecondHeading from '../atoms/SecondHeading'
 
-// ✅ Validation schema
 const schema = yup.object().shape({
   name: yup.string().required('Name is required'),
   email: yup.string().email('Invalid email format').required('Email is required'),
@@ -22,6 +22,7 @@ const ContactUs = () => {
 
   const onSubmit = (data) => {
     console.log('📨 Message sent:', data)
+    toast.success('Message sent successfully! 🚀')
     reset()
   }
 

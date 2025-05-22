@@ -73,7 +73,7 @@ const handleLogout = () => {
                 <Link to='/profile' className='font-bold uppercase text-sm'>
                   User Profile
                 </Link>
-                <button onClick={handleLogout} className='font-bold uppercase text-sm text-red-600 hover:underline'>
+                <button onClick={handleLogout} className='font-bold uppercase text-sm text-red-600 hover:underline cursor-pointer'>
                   Logout
                 </button>
               </>

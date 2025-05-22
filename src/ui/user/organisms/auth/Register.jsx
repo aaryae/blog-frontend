@@ -3,7 +3,7 @@ import { UserRoundPlus } from 'lucide-react'
 import { useForm } from 'react-hook-form'
 import { Link, useNavigate } from 'react-router-dom'
 import { signUp } from '../../../../services/auth/authService'
-import {registerSchema} from "../../../../config/schema/auth/register.schema"
+import { registerSchema } from "../../../../config/schema/auth/register.schema"
 import toast from 'react-hot-toast'
 
 const Register = () => {
@@ -17,18 +17,21 @@ const Register = () => {
     resolver: yupResolver(registerSchema),
   })
 
-const onSubmit = async (data) => {
-  console.log(data)
-  try {
-    const result = await signUp(data)
-    toast.success('🎉 Registration successful!')
-    navigate('/login')
-  } catch (error) {
-    const message = error?.response?.data?.message || 'Registration failed. Please try again.'
-    toast.error(`❌ ${message}`)
-    console.error('❌ Registration failed:', message)
+  const onSubmit = async (data) => {
+    // Remove validation-only fields before sending
+    const payload = { ...data }
+    delete payload.confirmPassword
+    delete payload.acceptTerms
+    try {
+      await signUp(payload)
+      toast.success('🎉 Registration successful!')
+      navigate('/login')
+    } catch (error) {
+      const message = error?.response?.data?.message || 'Registration failed. Please try again.'
+      toast.error(`❌ ${message}`)
+      console.error('❌ Registration failed:', message)
+    }
   }
-}
 
   return (
     <div className='flex items-center justify-center bg-white pt-40 py-20'>
@@ -48,20 +51,20 @@ const onSubmit = async (data) => {
             <div>
               <label className='text-sm font-medium text-gray-700'>First Name</label>
               <input
-                {...register('firstName')}
+                {...register('firstname')}
                 placeholder='John'
                 className='w-full border border-gray-300 px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-red-600'
               />
-              <p className='text-red-500 text-sm'>{errors.firstName?.message}</p>
+              <p className='text-red-500 text-sm'>{errors.firstname?.message}</p>
             </div>
             <div>
               <label className='text-sm font-medium text-gray-700'>Last Name</label>
               <input
-                {...register('lastName')}
+                {...register('lastname')}
                 placeholder='Doe'
                 className='w-full border border-gray-300 px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-red-600'
               />
-              <p className='text-red-500 text-sm'>{errors.lastName?.message}</p>
+              <p className='text-red-500 text-sm'>{errors.lastname?.message}</p>
             </div>
           </div>
 
@@ -76,16 +79,16 @@ const onSubmit = async (data) => {
             <p className='text-red-500 text-sm'>{errors.email?.message}</p>
           </div>
 
-          {/* Phone + Address */}
+          {/* Contact Number + Address */}
           <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
             <div>
-              <label className='text-sm font-medium text-gray-700'>Phone Number</label>
+              <label className='text-sm font-medium text-gray-700'>Contact Number</label>
               <input
-                {...register('phone')}
+                {...register('contactNumber')}
                 placeholder='+977 9800000000'
                 className='w-full border border-gray-300 px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-red-600'
               />
-              <p className='text-red-500 text-sm'>{errors.phone?.message}</p>
+              <p className='text-red-500 text-sm'>{errors.contactNumber?.message}</p>
             </div>
             <div>
               <label className='text-sm font-medium text-gray-700'>Address</label>
@@ -122,27 +125,16 @@ const onSubmit = async (data) => {
             </div>
           </div>
 
-          {/* Nationality */}
-          <div>
-            <label className='text-sm font-medium text-gray-700'>Nationality</label>
-            <input
-              {...register('nationality')}
-              placeholder='Nepali, Indian, etc.'
-              className='w-full border border-gray-300 px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-red-600'
-            />
-            <p className='text-red-500 text-sm'>{errors.nationality?.message}</p>
-          </div>
-
-          {/* About */}
+          {/* Description */}
           <div>
             <label className='text-sm font-medium text-gray-700'>About You</label>
             <textarea
               rows='3'
-              {...register('about')}
+              {...register('description')}
               placeholder='Tell us a bit about yourself...'
               className='w-full border border-gray-300 px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-red-600 resize-none'
             ></textarea>
-            <p className='text-red-500 text-sm'>{errors.about?.message}</p>
+            <p className='text-red-500 text-sm'>{errors.description?.message}</p>
           </div>
 
           {/* Terms */}

@@ -1,22 +1,28 @@
 import {
-  CalendarDays, Globe, Info, Lock, Mail,
-  MapPin, Pencil, Phone, Trash2, User2, Plus
+  CalendarDays, Info, Lock, Mail,
+  MapPin, Pencil, Plus, Phone, User2
 } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
+import { yupResolver } from '@hookform/resolvers/yup'
 import toast from 'react-hot-toast'
 import SecondHeading from '../../atoms/SecondHeading'
 import {
   getUserById,
   updateUser,
   changePassword,
-  // deleteUser // Comment out import if not used
 } from '../../../../services/user/userService'
 import ProfileItem from '../../molecules/ProfileItem'
 import Modal from '../../molecules/Modal'
 import { Link } from 'react-router-dom'
 
-const USER_ID = 2 // Replace with auth context in real app
+// Import schemas with correct keys!
+import {
+  updateProfileSchema,
+  changePasswordSchema
+} from '../../../../config/schema/auth/profile.schema'
+
+const USER_ID = localStorage.getItem('userId')
 
 const Profile = () => {
   const [user, setUser] = useState(null)
@@ -25,6 +31,7 @@ const Profile = () => {
   const [showUpdateModal, setShowUpdateModal] = useState(false)
   const [showPasswordModal, setShowPasswordModal] = useState(false)
 
+  // Fetch user on mount
   useEffect(() => {
     const fetchUser = async () => {
       try {
@@ -37,20 +44,38 @@ const Profile = () => {
         setLoading(false)
       }
     }
-
     fetchUser()
   }, [])
 
+  // --- Update Profile Form ---
   const {
     register: registerUpdate,
     handleSubmit: handleUpdateSubmit,
-    reset: resetUpdate
-  } = useForm()
+    reset: resetUpdate,
+    formState: { errors: updateErrors }
+  } = useForm({
+    resolver: yupResolver(updateProfileSchema),
+  })
 
+  // Make sure form fields always match API
+  useEffect(() => {
+    if (user) {
+      resetUpdate({
+        firstname: user.firstname || '',
+        lastname: user.lastname || '',
+        contactNumber: user.contactNumber || '',
+        address: user.address || '',
+        description: user.description || '',
+      })
+    }
+  }, [user, resetUpdate])
+
+  // Update profile and refresh user after update
   const onUpdateSubmit = async (data) => {
     try {
-      const res = await updateUser(USER_ID, data)
-      setUser(res)
+      await updateUser(USER_ID, data)
+      const updatedUser = await getUserById(USER_ID)
+      setUser(updatedUser)
       toast.success('✅ Profile updated successfully!')
       setShowUpdateModal(false)
     } catch (error) {
@@ -58,17 +83,16 @@ const Profile = () => {
     }
   }
 
+  // --- Change Password Form ---
   const {
     register: registerPassword,
     handleSubmit: handlePasswordSubmit,
-  } = useForm()
+    formState: { errors: passwordErrors }
+  } = useForm({
+    resolver: yupResolver(changePasswordSchema),
+  })
 
   const onPasswordSubmit = async (data) => {
-    if (data.newPassword !== data.confirmPassword) {
-      toast.error('❌ Passwords do not match.')
-      return
-    }
-
     try {
       await changePassword(user.email, {
         oldPassword: data.oldPassword,
@@ -81,33 +105,6 @@ const Profile = () => {
     }
   }
 
-  // Commented out the delete user logic as requested
-  // const handleDelete = async () => {
-  //   const confirmDelete = confirm('Are you sure you want to delete your account?')
-  //   if (!confirmDelete) return
-  //
-  //   try {
-  //     await deleteUser(USER_ID)
-  //     toast.success('✅ Account deleted successfully.')
-  //     // redirect or logout
-  //   } catch (err) {
-  //     toast.error('❌ Failed to delete account.')
-  //   }
-  // }
-
-  useEffect(() => {
-    if (user) {
-      resetUpdate({
-        firstName: user.firstName,
-        lastName: user.lastName,
-        phone: user.phone,
-        nationality: user.nationality,
-        address: user.address,
-        about: user.about
-      })
-    }
-  }, [user, resetUpdate])
-
   if (loading) return <div className='p-8'>Loading...</div>
   if (error) return <div className='p-8 text-red-600'>{error}</div>
 
@@ -116,13 +113,12 @@ const Profile = () => {
       <SecondHeading value='Your Profile' />
 
       <div className='rounded-xl space-y-6'>
-        <ProfileItem icon={<User2 size={24} />} label='Full Name' value={`${user.firstName} ${user.lastName}`} />
+        <ProfileItem icon={<User2 size={24} />} label='Full Name' value={`${user.firstname} ${user.lastname}`} />
         <ProfileItem icon={<Mail size={24} />} label='Email' value={user.email} />
-        <ProfileItem icon={<Phone size={24} />} label='Phone' value={user.phone} />
-        <ProfileItem icon={<Globe size={24} />} label='Nationality' value={user.nationality} />
+        <ProfileItem icon={<Phone size={24} />} label='Contact Number' value={user.contactNumber} />
         <ProfileItem icon={<MapPin size={24} />} label='Address' value={user.address} />
-        <ProfileItem icon={<Info size={24} />} label='About' value={user.about} />
-        <ProfileItem icon={<CalendarDays size={24} />} label='Joined' value={user.joined || 'N/A'} />
+        <ProfileItem icon={<Info size={24} />} label='Description' value={user.description || 'loading...'} />
+        <ProfileItem icon={<CalendarDays size={24} />} label='Joined' value={user.joined || 'may 28,2025'} />
 
         <div className='flex flex-wrap gap-3 pt-10'>
           <button
@@ -139,17 +135,6 @@ const Profile = () => {
             <Pencil size={18} /> Update Profile
           </button>
 
-          {/* Commented out the delete button */}
-          {/* 
-          <button
-            onClick={handleDelete}
-            className='bg-[#991010] text-white py-3 px-6 rounded-lg hover:-translate-y-1 hover:bg-[#742e24] transition-all flex items-center gap-2'
-          >
-            <Trash2 size={18} /> Delete Account
-          </button>
-          */}
-
-          {/* Add Post Button */}
           <Link
             to="/addpost"
             className='bg-[#991010] text-white py-3 px-6 rounded-lg hover:-translate-y-1 hover:bg-[#742e24] transition-all flex items-center gap-2'
@@ -159,27 +144,64 @@ const Profile = () => {
         </div>
       </div>
 
-      {/* Update Modal */}
+      {/* --- Update Profile Modal --- */}
       {showUpdateModal && (
         <Modal title='Update Profile' onClose={() => setShowUpdateModal(false)}>
           <form onSubmit={handleUpdateSubmit(onUpdateSubmit)} className='space-y-4'>
-            {['firstName', 'lastName', 'phone', 'nationality', 'address'].map((field) => (
-              <div key={field}>
-                <label className='block text-sm font-medium text-gray-700 mb-1 capitalize'>{field}</label>
-                <input
-                  {...registerUpdate(field)}
-                  placeholder={field}
-                  className='w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#991010] focus:outline-none'
-                />
-              </div>
-            ))}
             <div>
-              <label className='block text-sm font-medium text-gray-700 mb-1'>About</label>
+              <label className='block text-sm font-medium text-gray-700 mb-1'>First Name</label>
+              <input
+                {...registerUpdate('firstname')}
+                placeholder='First Name'
+                className='w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#991010] focus:outline-none'
+              />
+              {updateErrors.firstname && (
+                <p className="text-sm text-red-600 mt-1">{updateErrors.firstname.message}</p>
+              )}
+            </div>
+            <div>
+              <label className='block text-sm font-medium text-gray-700 mb-1'>Last Name</label>
+              <input
+                {...registerUpdate('lastname')}
+                placeholder='Last Name'
+                className='w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#991010] focus:outline-none'
+              />
+              {updateErrors.lastname && (
+                <p className="text-sm text-red-600 mt-1">{updateErrors.lastname.message}</p>
+              )}
+            </div>
+            <div>
+              <label className='block text-sm font-medium text-gray-700 mb-1'>Contact Number</label>
+              <input
+                {...registerUpdate('contactNumber')}
+                placeholder='Contact Number'
+                className='w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#991010] focus:outline-none'
+              />
+              {updateErrors.contactNumber && (
+                <p className="text-sm text-red-600 mt-1">{updateErrors.contactNumber.message}</p>
+              )}
+            </div>
+            <div>
+              <label className='block text-sm font-medium text-gray-700 mb-1'>Address</label>
+              <input
+                {...registerUpdate('address')}
+                placeholder='Address'
+                className='w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#991010] focus:outline-none'
+              />
+              {updateErrors.address && (
+                <p className="text-sm text-red-600 mt-1">{updateErrors.address.message}</p>
+              )}
+            </div>
+            <div>
+              <label className='block text-sm font-medium text-gray-700 mb-1'>Description</label>
               <textarea
-                {...registerUpdate('about')}
-                placeholder='About you...'
+                {...registerUpdate('description')}
+                placeholder='Description'
                 className='w-full px-4 py-2 border border-gray-300 rounded-md resize-none focus:ring-2 focus:ring-[#991010] focus:outline-none min-h-[80px]'
               />
+              {updateErrors.description && (
+                <p className="text-sm text-red-600 mt-1">{updateErrors.description.message}</p>
+              )}
             </div>
             <div className='flex justify-end gap-3 pt-4'>
               <button type='submit' className='bg-[#991010] text-white py-3 px-6 rounded-lg'>Save Changes</button>
@@ -189,7 +211,7 @@ const Profile = () => {
         </Modal>
       )}
 
-      {/* Password Modal */}
+      {/* --- Change Password Modal --- */}
       {showPasswordModal && (
         <Modal title='Change Password' onClose={() => setShowPasswordModal(false)}>
           <form onSubmit={handlePasswordSubmit(onPasswordSubmit)} className='space-y-4'>
@@ -202,6 +224,9 @@ const Profile = () => {
                   placeholder={label}
                   className='w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#991010] focus:outline-none'
                 />
+                {passwordErrors[name] && (
+                  <p className="text-sm text-red-600 mt-1">{passwordErrors[name]?.message}</p>
+                )}
               </div>
             ))}
             <div className='flex justify-end gap-3 pt-4'>
