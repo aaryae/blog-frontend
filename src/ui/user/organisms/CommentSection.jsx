@@ -8,8 +8,8 @@ const CommentSection = ({ postId }) => {
   const [newComment, setNewComment] = useState('')
   const [loading, setLoading] = useState(false)
   const [submitting, setSubmitting] = useState(false)
+  const loggedInUserId = Number(localStorage.getItem('userId')) // <---- added
 
-  // Fetch comments on mount
   const fetchComments = async () => {
     setLoading(true)
     try {
@@ -24,25 +24,19 @@ const CommentSection = ({ postId }) => {
 
   useEffect(() => {
     if (postId) fetchComments()
-    // eslint-disable-next-line
   }, [postId])
 
-  // Handle new comment submit
   const handleAddComment = async (e) => {
     e.preventDefault()
     if (!newComment.trim()) return
     setSubmitting(true)
     try {
-      // Get userId and cmtName from localStorage (update as needed for your auth system)
       const userId = Number(localStorage.getItem('userId'))
-      const cmtName = localStorage.getItem('username') || 'Anonymous'
 
-      // Send correct payload to backend
       await addReview({
-        cmtName,
+        cmtName: newComment,
         postId,
         userId,
-        // If your backend expects a message, add: content: newComment,
       })
 
       setNewComment('')
@@ -55,15 +49,14 @@ const CommentSection = ({ postId }) => {
     }
   }
 
-  // Handle delete
   const handleDelete = async (id) => {
-    if (!window.confirm('Delete this comment?')) return
+    setComments((prev) => prev.filter((c) => c.id !== id))
     try {
       await deleteReview(id)
       toast.success('Comment deleted!')
-      fetchComments()
     } catch {
       toast.error('Failed to delete comment')
+      fetchComments()
     }
   }
 
@@ -97,24 +90,22 @@ const CommentSection = ({ postId }) => {
             comments.map((c) => (
               <li key={c.id} className="bg-gray-50 border rounded-lg p-3 flex justify-between items-start">
                 <div>
-                  <div className="font-semibold">{c.cmtName || c.username || 'Anonymous'}</div>
-                  {/* If your backend returns comment content, show it here */}
-                  {c.content && (
-                    <div className="text-sm text-gray-700 mt-1">{c.content}</div>
-                  )}
+                  <div className="font-semibold">{c.cmtName}</div>
                   <div className="text-xs text-gray-400 mt-1">
                     {c.createdDate
                       ? new Date(c.createdDate).toLocaleString()
                       : ''}
                   </div>
                 </div>
-                <button
-                  className="text-red-500 hover:underline ml-4"
-                  onClick={() => handleDelete(c.id)}
-                  title="Delete"
-                >
-                  <Trash2 size={16} />
-                </button>
+                {c.userId === loggedInUserId && (
+                  <button
+                    className="text-red-500 hover:underline ml-4"
+                    onClick={() => handleDelete(c.id)}
+                    title="Delete"
+                  >
+                    <Trash2 size={16} />
+                  </button>
+                )}
               </li>
             ))
           )}

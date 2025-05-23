@@ -44,6 +44,7 @@ const onSubmit = async (data) => {
     const result = await signIn(data)
 
     // Save data to localStorage
+    console.log(result)
     localStorage.setItem('accessToken', result.token)
     localStorage.setItem('refreshToken', result.refreshToken)
     localStorage.setItem('role', result.roles)

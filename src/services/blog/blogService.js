@@ -15,6 +15,12 @@ export const getAllBlogs = async () => {
   return res.data
 }
 
+// In your blogService.js (add this):
+export const editBlog = async (postId, formData) => {
+  const res = await axiosInstance.post(`/post/update/${postId}`, formData)
+  return res.data
+}
+
 //get blogs by catagory
 export const getBlogsByCategory = async (categoryId) => {
   const res = await axiosInstance.get(`/post/getPostByCategoryForUser/${categoryId}`)
